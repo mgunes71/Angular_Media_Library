@@ -1,0 +1,106 @@
+<div class="h-100">
+  <div class="d-flex justify-content-end mb-3 text-white" style="background: #4e73df">
+    <button class="btn btn-info" style="border-radius: 0" (click)="dialog.open(addImage)">Add Media
+      <i class="fas fa-plus-circle"></i>
+    </button>
+
+  </div>
+  <hr class="bg-dark">
+  <div class="d-flex align-items-center" style="border: 2px solid black">
+    <ng-container *ngIf="!multipleChoose">
+      <mat-button-toggle-group name="favoriteColor" aria-label="Favorite Color">
+        <mat-button-toggle (click)="openFilterDate()">Filter Date</mat-button-toggle>
+      </mat-button-toggle-group>
+
+      <mat-button-toggle-group name="favoriteColor" aria-label="Favorite Color">
+        <mat-button-toggle (click)="chooseFile()">Multiple Choose</mat-button-toggle>
+      </mat-button-toggle-group>
+
+      <div *ngIf="list" class="input-group ml-auto w-25 mr-2">
+        <input type="text" class="form-control bg-light border-5 small" placeholder="Search for..."
+               aria-label="Search" aria-describedby="basic-addon2">
+        <div class="input-group-append">
+          <button class="btn btn-primary" type="button">
+            <i class="fas fa-search fa-sm"></i>
+          </button>
+        </div>
+      </div>
+    </ng-container>
+    <div *ngIf="multipleChoose" class="example-button-row d-flex p-2">
+      <p *ngIf="selectedPhotos.length > 0" (click)="deleteChooseFile()" class="mx-2 mb-0">
+        <button mat-raised-button color="warn">Delete {{selectedPhotos.length}} file</button>
+      </p>
+      <button (click)="chooseFile()" mat-button>Cancel</button>
+
+    </div>
+  </div>
+
+  <div *ngIf="panelOpenState" class="mt-2 d-flex" style="border-bottom: 2px solid">
+    <ng-container *ngFor="let year of gropedYears; let i = index">
+      <ul  class="w-100">
+        <li>
+          <span class="pointer" (click)="filterPhotosYear(year)">{{year}}</span>
+          <div class="btn-group">
+                        <span class=" dropdown-toggle dropdown-toggle-split" data-toggle="dropdown"
+                              aria-expanded="false">
+                          <span class="sr-only">Toggle Dropdown</span>
+                        </span>
+            <div class="dropdown-menu">
+              <a (click)="filterPhotosMonth(year,month)" *ngFor="let month of gropedMonth[i]"
+                 class="dropdown-item">Month: {{month}} - Year: {{year}}</a>
+            </div>
+          </div>
+        </li>
+      </ul>
+    </ng-container>
+  </div>
+
+  <div class="row align-items-center w-100">
+    <h3 class="col-12 text-center">All Photos</h3>
+    <ng-container *ngIf="!list">
+      <div *ngFor="let photo of photos; let i = index" class="col-12 col-md-4 col-lg-2 text-center mb-2">
+        <div class="img-thumbnail" [class.selected]="selectedPhotos[i]?.select && multipleChoose">
+          <img (click)="selectPhoto(i)" width="100%" height="100%" [src]="photo?.filePath" alt="">
+          <i (click)="scaleImage(photo.filePath)" class="far fa-eye"></i>
+          <button class="close-button" (click)="openDialog(photo.filename)">
+            <!--          <i class="fas fa-trash"></i>-->
+          </button>
+        </div>
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="list">
+      <div *ngFor="let photo of photos; let i = index" class="col-12 mb-2">
+        <div style="position: relative" class="list-photos d-flex"
+             [class.selected]="selectedPhotos[i]?.select && multipleChoose">
+          <img (click)="selectPhoto(i)" width="250" height="250" [src]="photo?.filePath" alt="">
+          <div class="d-flex flex-column ml-3">
+            <p>Filename: <b class="text-black-50">{{photo.filename}}</b></p>
+            <p>Type: <b class="text-black-50">{{photo.type}}</b></p>
+            <p>CreatedDate: <b class="text-black-50">{{photo.createdAt}}</b></p>
+            <a class="text-left text-danger" style="text-decoration: none"> Delete
+              <i style="cursor: pointer" (click)="openDialog(photo.filename)" class="fas fa-trash"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+  </div>
+</div>
+
+
+<ng-template #addImage>
+  <div class="p-3">
+    <h4>Upload</h4>
+    <div appDnd (fileDropped)="uploadPhotos($event)"
+         class="d-flex flex-column justify-content-center align-items-center">
+      <p><i class="fas fa-cloud-upload-alt plus-ico"></i></p>
+      <h3 class="">Drag and drop or browse</h3>
+      <input (change)="uploadPhotos($event)" type="file" multiple accept="image/*" aria-label="Add Photo"
+             class=" file-input">
+    </div>
+  </div>
+  <div mat-dialog-actions>
+    <button mat-button mat-dialog-close>Close</button>
+  </div>
+</ng-template>

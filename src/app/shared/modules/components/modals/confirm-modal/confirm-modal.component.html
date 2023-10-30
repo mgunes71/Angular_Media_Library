@@ -1,0 +1,8 @@
+<h1 mat-dialog-title>Delete file</h1>
+<div mat-dialog-content>
+  Would you like to delete cat.jpeg?
+</div>
+<div mat-dialog-actions>
+  <button (click)="closeDialog()" mat-button mat-dialog-close cdkFocusInitial>No</button>
+  <button (click)="confirm()" mat-button modal-dialog-close color="warn">Yes</button>
+</div>
